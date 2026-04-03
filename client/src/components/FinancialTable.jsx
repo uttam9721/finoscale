@@ -1,53 +1,3 @@
-// import React from "react";
-
-// const rows = [
-//   { key: "tangible_assets", label: "Tangible Assets" },
-//   { key: "inventories", label: "Inventories" },
-//   { key: "trade_receivables", label: "Trade Receivables" },
-//   { key: "cash_and_bank_balances", label: "Cash & Bank" },
-// ];
-
-// const FinancialTable = ({ data }) => {
-//   return (
-//     <div className="overflow-x-auto">
-//       <table className="w-full border border-[#ccc] border border-[#ccc]-[#ccc]">
-//         <thead>
-//           <tr className="text-start">
-//             <th className=" border border-[#ccc] border border-[#ccc]-[#ccc] p-2">Particulars</th>
-//             {data.map((item) => (
-//               <th key={item.year} className=" border border-[#ccc] border border-[#ccc]-[#ccc] p-2">
-//                 {item.year}
-//               </th>
-//             ))}
-//           </tr>
-//         </thead>
-
-//         <tbody>
-//           {rows.map((row) => (
-//             <tr key={row.key}>
-//               <td className=" border border-[#ccc] border border-[#ccc]-[#ccc] p-2">{row.label}</td>
-
-//               {data.map((yearData) => (
-//                 <td key={yearData.year} className="border border-[#ccc] border border-[#ccc]-[#ccc] p-2 text-right">
-//                   {yearData.assets[row.key]?.toLocaleString() || 0}
-//                 </td>
-//               ))}
-//             </tr>
-//           ))}
-//         </tbody>
-//       </table>
-//     </div>
-//   );
-// };
-
-// export default FinancialTable;
-
-
-
-
-
-
-
 import React from "react";
 
 const formatNumber = (num) => {
@@ -65,17 +15,17 @@ const formatDate = (date) => {
 const FinancialTable = ({ data }) => {
   return (
     <div className="overflow-x-auto">
-      <table className="w-full border border-[#ccc] border border-[#ccc]-gray-300 text-sm">
-        
+      <table className="w-full border border-gray-300 text-sm">
+
         {/* HEADER */}
         <thead className="bg-gray-100">
           <tr>
-            <th className="border border-[#ccc] p-3 text-left font-semibold">
+            <th className="border p-3 text-left font-semibold">
               Particulars
             </th>
 
             {data.map((item) => (
-              <th key={item.year} className="border border-[#ccc] p-3 text-center font-semibold">
+              <th key={item.year} className="border p-3 text-center font-semibold">
                 {formatDate(item.year)}
               </th>
             ))}
@@ -83,23 +33,24 @@ const FinancialTable = ({ data }) => {
         </thead>
 
         <tbody>
-          {/* ================= Assets ================= */}
-          <tr className="bg-gray-200 font-semibold">
-            <td className="p-2">Assets</td>
-            {data.map((d) => <td key={d.year}></td>)}
+
+          {/* Assets */}
+          <tr className="bg-gray-300 font-bold">
+            <td className="p-2 border">Assets</td>
+            {data.map((d) => <td key={d.year} className="border"></td>)}
           </tr>
 
           {/* Net Fixed Assets */}
-          <tr className="bg-gray-100 font-semibold">
-            <td className="p-2">Net Fixed Assets</td>
-            {data.map((d) => <td key={d.year}></td>)}
+          <tr className="bg-gray-200 font-semibold">
+            <td className="p-2 border">Net Fixed Assets</td>
+            {data.map((d) => <td key={d.year} className="border"></td>)}
           </tr>
 
           {/* Tangible */}
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Tangible Assets</td>
+            <td className="border p-2 pl-6">Tangible Assets</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.tangible_assets)}
               </td>
             ))}
@@ -107,9 +58,9 @@ const FinancialTable = ({ data }) => {
 
           {/* Intangible */}
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Intangible Assets</td>
+            <td className="border p-2 pl-6">Intangible Assets</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.intangible_assets)}
               </td>
             ))}
@@ -117,114 +68,124 @@ const FinancialTable = ({ data }) => {
 
           {/* Total Net Fixed */}
           <tr className="font-semibold">
-            <td className="border border-[#ccc] p-2 pl-4">
+            <td className="border p-2 pl-4">
               Total Net Fixed Assets
             </td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
-                {formatNumber(d.bs.subTotals.net_fixed_assets)}
+              <td className="border p-2 text-right">
+                {formatNumber(
+                  d.bs.assets.tangible_assets +
+                  (d.bs.assets.intangible_assets || 0)
+                )}
               </td>
             ))}
           </tr>
 
-          {/* ================= Capital WIP ================= */}
-          <tr className="bg-gray-100 font-semibold">
-            <td className="p-2">Capital Work In Progress</td>
+          {/* Capital WIP */}
+          <tr className="bg-gray-200 font-semibold">
+            <td className="p-2 border">Capital Work In Progress</td>
             {data.map((d) => (
-              <td className="p-2 text-right">
-                {formatNumber(d.bs.subTotals.capital_wip)}
+              <td className="border p-2 text-right">
+                {formatNumber(
+                  (d.bs.assets.tangible_assets_capital_work_in_progress || 0) +
+                  (d.bs.assets.intangible_assets_under_development || 0)
+                )}
               </td>
             ))}
           </tr>
 
-          {/* ================= Other Non Current ================= */}
-          <tr className="bg-gray-100 font-semibold">
-            <td className="p-2">Other Non-current Assets</td>
-            {data.map((d) => <td key={d.year}></td>)}
+          {/* Other Non Current */}
+          <tr className="bg-gray-200 font-semibold">
+            <td className="p-2 border">Other Non-current Assets</td>
+            {data.map((d) => <td key={d.year} className="border"></td>)}
           </tr>
 
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Non Current Investments</td>
+            <td className="border p-2 pl-6">Non Current Investments</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.noncurrent_investments)}
               </td>
             ))}
           </tr>
 
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Long Term Loans</td>
+            <td className="border p-2 pl-6">Long Term Loans</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.long_term_loans_and_advances)}
               </td>
             ))}
           </tr>
 
           <tr className="font-semibold">
-            <td className="border border-[#ccc] p-2 pl-4">
+            <td className="border p-2 pl-4">
               Total Other Non Current Assets
             </td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
-                {formatNumber(d.bs.subTotals.total_other_non_current_assets)}
+              <td className="border p-2 text-right">
+                {formatNumber(
+                  (d.bs.assets.noncurrent_investments || 0) +
+                  (d.bs.assets.long_term_loans_and_advances || 0)
+                )}
               </td>
             ))}
           </tr>
 
-          {/* ================= Current Assets ================= */}
-          <tr className="bg-gray-100 font-semibold">
-            <td className="p-2">Current Assets</td>
-            {data.map((d) => <td key={d.year}></td>)}
+          {/* Current Assets */}
+          <tr className="bg-gray-200 font-semibold">
+            <td className="p-2 border">Current Assets</td>
+            {data.map((d) => <td key={d.year} className="border"></td>)}
           </tr>
 
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Inventories</td>
+            <td className="border p-2 pl-6">Inventories</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.inventories)}
               </td>
             ))}
           </tr>
 
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Trade Receivables</td>
+            <td className="border p-2 pl-6">Trade Receivables</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.trade_receivables)}
               </td>
             ))}
           </tr>
 
           <tr>
-            <td className="border border-[#ccc] p-2 pl-6">Cash & Bank</td>
+            <td className="border p-2 pl-6">Cash & Bank</td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.assets.cash_and_bank_balances)}
               </td>
             ))}
           </tr>
 
           <tr className="font-semibold">
-            <td className="border border-[#ccc] p-2 pl-4">
+            <td className="border p-2 pl-4">
               Total Current Assets
             </td>
             {data.map((d) => (
-              <td className="border border-[#ccc] p-2 text-right">
+              <td className="border p-2 text-right">
                 {formatNumber(d.bs.subTotals.total_current_assets)}
               </td>
             ))}
           </tr>
 
           {/* TOTAL */}
-          <tr className="bg-gray-200 font-bold text-base">
-            <td className="p-3">Total Assets</td>
+          <tr className="bg-gray-300 font-bold text-base">
+            <td className="p-3 border">Total Assets</td>
             {data.map((d) => (
-              <td className="p-3 text-right">
+              <td className="p-3 border text-right">
                 {formatNumber(d.bs.assets.given_assets_total)}
               </td>
             ))}
           </tr>
+
         </tbody>
       </table>
     </div>
